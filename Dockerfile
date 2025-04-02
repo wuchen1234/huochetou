@@ -12,5 +12,5 @@ RUN echo '/etc/init.d/frps restart' >>/1.sh
 RUN echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config 
 RUN echo root:uncleluo|chpasswd
 RUN chmod 755 /1.sh
-EXPOSE 80 8888 443 5130 5131 5132 5133 5134 5135 3306 22
+EXPOSE 22 80 8888 443 5130 5131 5132 5133 5134 5135 3306
 CMD  /1.sh
