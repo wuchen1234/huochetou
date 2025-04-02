@@ -1,22 +1,25 @@
-FROM debian:latest
-
-# 更新包列表并安装 openssh-server 和 openjdk-17-jdk
-RUN apt-get update && \
-    apt-get install -y openssh-server openjdk-17-jdk && \
-    apt-get clean
-
-# 创建 SSH 所需目录，并修改 SSH 配置允许 root 密码登录
-RUN mkdir /var/run/sshd && \
-    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-    echo "root:uncleluo" | chpasswd
-
-# 设置 JAVA_HOME 环境变量，并添加到 PATH 中
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-ENV PATH=$PATH:$JAVA_HOME/bin
-
-# 暴露 SSH 默认端口 22
+# 选择一个已有的os镜像作为基础
+FROM centos:centos6
+ 
+# 镜像的作者
+MAINTAINER Fanbin Kong "kongxx@hotmail.com"
+ 
+# 安装openssh-server和sudo软件包，并且将sshd的UsePAM参数设置成no
+RUN yum install -y openssh-server sudo
+RUN sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config 
+ 
+# 添加测试用户admin，密码admin，并且将此用户添加到sudoers里
+RUN useradd admin
+RUN echo "admin:admin" | chpasswd
+RUN echo "admin  ALL=(ALL)    ALL" >> /etc/sudoers
+ 
+# 下面这两句比较特殊，在centos6上必须要有，否则创建出来的容器sshd不能登录
+RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
+ 
+# 启动sshd服务并且暴露22端口
+RUN mkdir /var/run/sshd
 EXPOSE 22
-
-# 启动 SSH 服务
 CMD ["/usr/sbin/sshd", "-D"]
+
 
