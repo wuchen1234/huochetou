@@ -1,30 +1,19 @@
-FROM centos:centos6
-MAINTAINER Fanbin Kong "kongxx@hotmail.com"
-
-
-# 备份并替换 CentOS-Base.repo
-RUN cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
-RUN yum clean all
-RUN yum makecache
-
-# 安装openssh-server和sudo软件包，并且将sshd的UsePAM参数设置成no
-RUN yum install -y openssh-server sudo
-RUN sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config 
-
-# 添加测试用户admin，密码admin，并且将此用户添加到sudoers里
-RUN useradd -p $(openssl passwd -1 admin) admin
-RUN echo "admin  ALL=(ALL)    ALL" >> /etc/sudoers
-
-# 下面这两句比较特殊，在centos6上必须要有，否则创建出来的容器sshd不能登录
-RUN rm -f /etc/ssh/ssh_host_dsa_key /etc/ssh/ssh_host_rsa_key
-RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
-RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
-
-# 启动sshd服务并且暴露22端口
-RUN mkdir /var/run/sshd
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]    
+FROM debian
+RUN apt update
+RUN apt install ssh wget npm -y
+RUN npm install -g wstunnel
+RUN wget https://raw.githubusercontent.com/MvsCode/frps-onekey/master/install-frps.sh -O ./install-frps.sh
+RUN chmod 700 ./install-frps.sh
+RUN sh -c '/bin/echo -e "2\n5130\n5131\n5132\n5133\nadmin\nadmin\n\n\n\n\n\n\n\n\n\n" | ./install-frps.sh install'
+RUN mkdir /run/sshd
+RUN echo 'wstunnel -s 0.0.0.0:80 &' >>/1.sh
+RUN echo '/usr/sbin/sshd -D' >>/1.sh
+RUN echo '/etc/init.d/frps restart' >>/1.sh
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN echo root:uncleluo|chpasswd
+RUN chmod 755 /1.sh
+EXPOSE 22 80 8888 443 5130 5131 5132 5133 5134 5135 3306
+CMD  /1.sh  
 
 
 
