@@ -1,8 +1,9 @@
 FROM centos:centos6
 MAINTAINER Fanbin Kong "kongxx@hotmail.com"
 
+
 # 备份并替换 CentOS-Base.repo
-RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+RUN cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
 RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
 RUN yum clean all
 RUN yum makecache
