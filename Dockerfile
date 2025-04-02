@@ -1,21 +1,17 @@
 FROM debian:latest
 
-# 更新包列表并安装 openssh-server 和 OpenJDK 11
+# 更新包列表并安装 openssh-server 和 openjdk-17-jdk
 RUN apt-get update && \
-    apt-get install -y openssh-server openjdk-11-jdk && \
+    apt-get install -y openssh-server openjdk-17-jdk && \
     apt-get clean
 
-# 创建 SSH 所需目录
-RUN mkdir /var/run/sshd
+# 创建 SSH 所需目录，并修改 SSH 配置允许 root 密码登录
+RUN mkdir /var/run/sshd && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    echo "root:uncleluo" | chpasswd
 
-# 修改 SSH 配置，允许 root 通过密码登录
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-
-# 设置 root 密码（此处密码为 "uncleluo"，请根据需要修改）
-RUN echo "root:uncleluo" | chpasswd
-
-# 可选：设置 JAVA_HOME 环境变量
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+# 设置 JAVA_HOME 环境变量，并添加到 PATH 中
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV PATH=$PATH:$JAVA_HOME/bin
 
 # 暴露 SSH 默认端口 22
