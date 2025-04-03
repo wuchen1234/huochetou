@@ -6,22 +6,6 @@ RUN apt update && apt upgrade -y
 # 安装 wget 和其他必要的依赖包
 RUN apt install -y wget gnupg2 ca-certificates lsb-release
 
-# 添加 MySQL 官方软件源并导入公钥
-RUN wget -qO - https://repo.mysql.com/RPM-GPG-KEY-mysql-2022 | apt-key add -
-RUN echo "deb http://repo.mysql.com/apt/debian/ buster mysql-8.0" | tee /etc/apt/sources.list.d/mysql.list
-# 导入公钥以解决签名验证问题
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
-
-# 更新软件包列表
-RUN apt update
-
-# 安装 MySQL 相关包
-RUN apt install -y mysql-community-server
-
-# 启动 MySQL 服务并设置 root 密码
-RUN service mysql start && \
-    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'testz01'; FLUSH PRIVILEGES;"
-
 # 安装 Java 11
 RUN apt install -y openjdk-11-jdk
 
