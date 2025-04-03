@@ -40,7 +40,7 @@ RUN sh -c '/bin/echo -e "2\n5130\n5131\n5132\n5133\nadmin\nadmin\n\n\n\n\n\n\n\n
 RUN mkdir /run/sshd
 
 # 编写启动脚本
-RUN echo 'wstunnel -s 0.0.0.0:80 &' >>/1.sh
+# RUN echo 'wstunnel -s 0.0.0.0:80 &' >>/1.sh
 RUN echo '/usr/sbin/sshd -D' >>/1.sh
 RUN echo '/etc/init.d/frps restart' >>/1.sh
 # 启动 MySQL 服务
@@ -58,7 +58,7 @@ RUN echo root:uncleluo|chpasswd
 RUN chmod 755 /1.sh
 
 # 暴露端口，添加 Nginx 常用端口
-EXPOSE 22 80 8888 443 5130 5131 5132 5133 5134 5135 3306
+EXPOSE 22 80 8080 8888 443 5130 5131 5132 5133 5134 5135 3306
 
 # 容器启动时执行启动脚本
 CMD  /1.sh    
