@@ -9,9 +9,11 @@ RUN apt update && apt upgrade -y
 RUN apt install -y wget gnupg2 ca-certificates lsb-release
 
 # 安装 Java 11
-RUN apt install -y openjdk-11-jdk
+RUN apt install -y openjdk-11-jdk git
 
 RUN apk add git
+
+FROM maven as maven
 
 
 # 安装其他必要的软件包
