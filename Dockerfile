@@ -3,12 +3,17 @@ FROM debian:buster
 # 更新软件包列表并升级系统
 RUN apt update && apt upgrade -y
 
+
+
 # 安装 wget 和其他必要的依赖包
 RUN apt install -y wget gnupg2 ca-certificates lsb-release
 
 # 安装 Java 11
 RUN apt install -y openjdk-11-jdk
 
+RUN apk add git
+
+FROM maven as maven
 # 安装其他必要的软件包
 RUN apt install -y ssh npm nginx
 
