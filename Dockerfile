@@ -33,6 +33,8 @@ RUN echo '/etc/init.d/frps restart' >>/1.sh
 # 启动 Nginx 服务
 RUN echo '/usr/sbin/nginx -g "daemon off;"' >>/1.sh
 
+RUN echo 'service nginx start' >>/1.sh
+
 # 修改 SSH 配置，允许 root 用户登录
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
