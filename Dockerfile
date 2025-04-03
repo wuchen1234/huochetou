@@ -13,8 +13,6 @@ RUN apt install -y openjdk-11-jdk git
 
 RUN apk add git
 
-FROM maven as maven
-
 
 # 安装其他必要的软件包
 RUN apt install -y ssh npm nginx
