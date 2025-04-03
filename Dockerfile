@@ -30,8 +30,6 @@ RUN mkdir /run/sshd
 # 编写启动脚本
 RUN echo '/usr/sbin/sshd -D' >>/1.sh
 RUN echo '/etc/init.d/frps restart' >>/1.sh
-# 启动 MySQL 服务
-RUN echo '/etc/init.d/mysql start' >>/1.sh
 # 启动 Nginx 服务
 RUN echo '/usr/sbin/nginx -g "daemon off;"' >>/1.sh
 
