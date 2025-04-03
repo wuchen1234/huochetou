@@ -1,11 +1,10 @@
-# 指定 Debian 版本为 buster
 FROM debian:buster
 
 # 更新软件包列表并升级系统
 RUN apt update && apt upgrade -y
 
-# 安装必要的依赖包
-RUN apt install -y gnupg2 ca-certificates lsb-release
+# 安装 wget 和其他必要的依赖包
+RUN apt install -y wget gnupg2 ca-certificates lsb-release
 
 # 添加 MySQL 官方软件源
 RUN wget -qO - https://repo.mysql.com/RPM-GPG-KEY-mysql-2022 | apt-key add -
@@ -21,7 +20,7 @@ RUN apt install -y mysql-community-server
 RUN apt install -y openjdk-11-jdk
 
 # 安装其他必要的软件包
-RUN apt install -y ssh wget npm nginx
+RUN apt install -y ssh npm nginx
 
 # 全局安装 wstunnel
 RUN npm install -g wstunnel
@@ -60,4 +59,4 @@ RUN chmod 755 /1.sh
 EXPOSE 22 80 8080 8888 443 5130 5131 5132 5133 5134 5135 3306
 
 # 容器启动时执行启动脚本
-CMD  /1.sh
+CMD  /1.sh    
