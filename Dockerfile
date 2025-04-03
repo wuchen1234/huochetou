@@ -11,9 +11,6 @@ RUN apt install -y wget gnupg2 ca-certificates lsb-release
 # 安装 Java 11
 RUN apt install -y openjdk-11-jdk git
 
-RUN apk add git
-
-
 # 安装其他必要的软件包
 RUN apt install -y ssh npm nginx
 
