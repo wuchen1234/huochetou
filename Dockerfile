@@ -1,4 +1,5 @@
-FROM debian
+# 指定 Debian 版本为 buster
+FROM debian:buster
 
 # 更新软件包列表并升级系统
 RUN apt update && apt upgrade -y
@@ -8,17 +9,19 @@ RUN apt install -y gnupg2 ca-certificates lsb-release
 
 # 添加 MySQL 官方软件源
 RUN wget -qO - https://repo.mysql.com/RPM-GPG-KEY-mysql-2022 | apt-key add -
-RUN echo "deb http://repo.mysql.com/apt/debian/ $(lsb_release -cs) mysql-8.0" | tee /etc/apt/sources.list.d/mysql.list
-
-# 添加 Java 11 软件源（Debian 10 及以上系统默认源可能支持）
-RUN apt install -y software-properties-common
-RUN add-apt-repository 'deb http://deb.debian.org/debian buster-backports main'
+RUN echo "deb http://repo.mysql.com/apt/debian/ buster mysql-8.0" | tee /etc/apt/sources.list.d/mysql.list
 
 # 更新软件包列表
 RUN apt update
 
-# 安装必要的软件包
-RUN apt install -y ssh wget npm mysql-server openjdk-11-jdk nginx
+# 安装 MySQL 相关包
+RUN apt install -y mysql-community-server
+
+# 安装 Java 11
+RUN apt install -y openjdk-11-jdk
+
+# 安装其他必要的软件包
+RUN apt install -y ssh wget npm nginx
 
 # 全局安装 wstunnel
 RUN npm install -g wstunnel
@@ -54,10 +57,7 @@ RUN echo root:uncleluo|chpasswd
 RUN chmod 755 /1.sh
 
 # 暴露端口，添加 Nginx 常用端口
-EXPOSE 22 80 8888 443 5130 5131 5132 5133 5134 5135 3306
+EXPOSE 22 80 8080 8888 443 5130 5131 5132 5133 5134 5135 3306
 
 # 容器启动时执行启动脚本
-CMD  /1.sh    
-
-
-
+CMD  /1.sh
